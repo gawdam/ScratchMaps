@@ -1,13 +1,30 @@
 @import 'tailwindcss';
+@import '@plop-ui/fonts/fonts.css';
+@import '@plop-ui/react/styles.css';
 
 @source not './world-countries.ts';
 @source not './world-water.ts';
+@source not './landmark-data.json';
+@source not './river-label-data.json';
 
-.leaflet-container {
-  background: #153f5b;
+.splash-paper { min-height: 100vh; min-height: 100dvh; }
+.splash-game { min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; padding: 28px 20px; text-align: center; }
+.splash-title { margin: 0; line-height: 1.1; }
+.splash-description { max-width: 370px; margin: 0; color: var(--plop-ink-text); font: 400 20px/1.35 Sketchpop, sans-serif; }
+.splash-start { margin-top: 54px; }
+.splash-footer { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 12px; }
+.game-brand { position: absolute; z-index: 1000; top: 18px; left: 18px; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; pointer-events: none; }
+
+.leaflet-container.world-map {
+  background-color: #928D79;
+  background-image:
+    radial-gradient(ellipse at center, transparent 55%, rgb(71 38 14 / 25%) 100%),
+    repeating-linear-gradient(4deg, rgb(101 66 29 / 3%) 0 1px, transparent 1px 6px),
+    repeating-linear-gradient(94deg, rgb(101 66 29 / 2%) 0 1px, transparent 1px 8px);
 }
 
 .world-map {
+  --matita-grain: 0.25;
   width: 100%;
   height: 100vh;
   height: 100dvh;
@@ -18,9 +35,10 @@
   align-items: center;
   gap: 2px;
   padding: 3px;
-  border: 1px solid #9a805e;
-  background: #efe3c8;
-  box-shadow: 0 1px 5px rgb(22 31 26 / 35%);
+  border: 2px solid var(--plop-ink);
+  border-radius: 12px 9px 13px 10px !important;
+  background: var(--plop-paper);
+  box-shadow: 3px 4px 0 var(--plop-ink);
 }
 
 .map-zoom-control__button,
@@ -30,26 +48,31 @@
   height: 30px;
   place-items: center;
   border: 0;
-  border-radius: 2px;
+  border-radius: 7px;
   background: transparent;
-  color: #43382b;
+  color: var(--plop-ink-text);
   font:
-    16px/1 Georgia,
-    serif;
+    700 16px/1 Sketchpop,
+    sans-serif;
+}
+
+.map-zoom-control__button svg {
+  display: block;
+  width: 20px;
+  height: 20px;
 }
 
 .map-zoom-control__button {
   cursor: pointer;
-  font-size: 20px;
 }
 
 .map-zoom-control__button:hover {
-  background: #e2d0ad;
+  background: var(--plop-mustard);
 }
 
 .map-zoom-control__level {
   min-width: 34px;
-  border-inline: 1px solid #c4ae88;
+  border-inline: 1px solid var(--plop-ink);
   font-size: 12px;
   font-variant-numeric: tabular-nums;
 }
@@ -67,28 +90,193 @@
   overflow: visible;
 }
 
-.landmark-legend {
-  display: grid;
-  gap: 5px;
-  padding: 9px 11px;
-  border: 1px solid #9a805e;
-  border-radius: 4px;
-  background: rgb(239 227 200 / 94%);
-  color: #43382b;
-  font:
-    12px/1.2 Georgia,
-    serif;
-  box-shadow: 0 1px 5px rgb(22 31 26 / 35%);
+.landmark-marker__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-color: var(--landmark-color);
+  mask-image: var(--landmark-image);
+  mask-position: center;
+  mask-repeat: no-repeat;
+  mask-size: contain;
 }
 
-.landmark-legend__title {
-  padding-bottom: 3px;
-  border-bottom: 1px solid #c4ae88;
-  font-size: 13px;
+.leaflet-map-coastline-shadow-pane svg > g {
+  filter: url('#coastline-shading');
 }
 
-.landmark-legend__item {
+.leaflet-control-layers {
+  border: 2px solid var(--plop-ink) !important;
+  border-radius: 13px 10px 14px 9px !important;
+  background: var(--plop-paper) !important;
+  color: var(--plop-ink-text);
+  font: 400 16px/1.35 Sketchpop, sans-serif;
+  box-shadow: 3px 4px 0 var(--plop-ink);
+}
+
+.leaflet-control-layers-separator {
+  border-top-color: #c9a86a;
+}
+
+.leaflet-container .leaflet-control-layers-toggle {
   display: flex;
+  width: 38px;
+  height: 38px;
   align-items: center;
-  gap: 6px;
+  justify-content: center;
+  border-radius: 10px 7px 11px 8px;
+  background-color: var(--plop-mustard);
+  background-image: none !important;
+}
+.leaflet-container .leaflet-control-layers-toggle svg { display: block; width: 26px; height: 26px; }
+.leaflet-container .leaflet-control-layers-expanded .leaflet-control-layers-toggle { display: none; }
+
+.layer-filter-icon { display: inline-flex; align-items: center; gap: 1px; margin-right: 5px; vertical-align: middle; }
+.layer-filter-icon svg { width: 18px; height: 18px; }
+.leaflet-control-layers input { accent-color: var(--plop-ink); }
+.leaflet-control-layers label { padding: 3px 0; }
+
+.leaflet-tooltip {
+  border: 2px solid var(--plop-ink);
+  border-radius: 8px 6px 9px 7px;
+  background: var(--plop-paper);
+  color: var(--plop-ink-text);
+  font: 400 14px Sketchpop, sans-serif;
+  box-shadow: 2px 3px 0 var(--plop-ink);
+}
+
+.map-name { pointer-events: none; }
+.map-name span { position: absolute; display: block; width: max-content; transform: translate(-50%, -50%); color: #302316; font: 700 12px/1.1 Georgia, serif; text-align: center; text-shadow: -1px -1px 2px #f4e3b8, 1px 1px 2px #f4e3b8, 1px -1px 2px #f4e3b8, -1px 1px 2px #f4e3b8; }
+.map-name--country span { text-transform: uppercase; letter-spacing: 0.04em; }
+.map-name--river span { color: #355951; font-size: 11px; font-style: italic; }
+.leaflet-tooltip.map-name-tooltip { padding: 0; border: 0; background: transparent; color: #302316; font: 700 11px/1.1 Georgia, serif; box-shadow: none; text-shadow: -1px -1px 2px #f4e3b8, 1px 1px 2px #f4e3b8, 1px -1px 2px #f4e3b8, -1px 1px 2px #f4e3b8; }
+.leaflet-tooltip.map-name-tooltip::before { display: none; }
+
+.map-credits {
+  display: none;
+  max-width: 220px;
+  margin: 6px 0 0;
+  padding-top: 6px;
+  border-top: 1px solid #c9a86a;
+  font-size: 10px;
+}
+
+.leaflet-control-layers-expanded .map-credits {
+  display: block;
+}
+
+.location-challenge { padding: 0; }
+.location-challenge[hidden] { display: none; }
+.challenge-preview { position: relative; width: 280px; height: 196px; }
+.challenge-preview-button { position: relative; display: block; width: 280px; height: 196px; padding: 0; border: 0; border-radius: 18px; overflow: hidden; background: #928D79; box-shadow: 0 4px 16px rgb(15 22 42 / 35%); cursor: pointer; }
+.challenge-preview-button::after { position: absolute; inset: 0; border: 2px solid #d21f2b; border-radius: inherit; content: ''; pointer-events: none; }
+.challenge-preview-button:focus-visible { outline: 2px solid #f1e4c4; outline-offset: 3px; }
+.challenge-preview-frame { display: block; position: relative; width: 100%; height: 100%; overflow: hidden; }
+.challenge-preview-image { display: block; width: 100%; height: 100%; object-fit: fill; background: #928D79; }
+.challenge-preview-target { position: absolute; top: 50%; left: 50%; width: 5%; aspect-ratio: 1; transform: translate(-50%, -50%); pointer-events: none; }
+.challenge-preview-target svg { width: 100%; height: 100%; }
+.challenge-preview-image:not([src]) + .challenge-preview-target { display: none; }
+.challenge-scratch-cover { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: none; cursor: crosshair; }
+.challenge-scratch-cover[hidden] { display: none; }
+.challenge-brush-cursor { position: absolute; border: 2px solid white; border-radius: 50%; box-shadow: 0 0 0 1px #302316; transform: translate(-50%, -50%); pointer-events: none; }
+.challenge-brush-cursor[hidden] { display: none; }
+.challenge-progress { position: relative; height: 22px; margin-bottom: 8px; overflow: hidden; border: 2px solid var(--plop-ink); border-radius: 9px; background: rgb(255 253 247 / 90%); }
+.challenge-progress-fill { display: block; width: 100%; height: 100%; background: repeating-linear-gradient(135deg, #e45d53 0 11px, #f59a90 11px 22px); }
+.challenge-multiplier { position: absolute; top: 0; right: 0; min-width: 46px; padding: 0 5px; background: var(--plop-paper); color: var(--plop-ink-text); font: 700 14px/18px Sketchpop, sans-serif; text-align: center; }
+.challenge-dialog { position: fixed; inset: 0; width: min(596px, 94vw, max(240px, calc((100dvh - 210px) * 1.1475 + 26px))); max-width: 94vw; max-height: calc(100dvh - 16px); overflow-y: auto; margin: auto; padding: 10px; border: 3px solid var(--plop-ink); border-radius: 20px 14px 22px 16px; background: var(--plop-paper); color: var(--plop-ink-text); font: 400 17px/1.3 Sketchpop, sans-serif; box-shadow: 7px 8px 0 var(--plop-ink); }
+.challenge-dialog::backdrop { background: rgb(28 46 140 / 48%); }
+.challenge-progress-title { margin: 0 0 4px; color: var(--plop-ink); font: 700 20px/1.1 Sketchpop, sans-serif; text-align: center; }
+.challenge-dialog-clues { position: relative; display: flex; align-items: center; justify-content: space-evenly; gap: 4px; margin: 14px 0 8px; padding: 8px 5px; border: 2px solid var(--plop-ink); border-radius: 10px; background: var(--plop-mint); font-weight: 700; }
+.challenge-dialog-clues[hidden] { display: none; }
+.challenge-hint-badge { position: absolute; top: -13px; left: 5px; display: flex; padding: 2px; border: 2px solid var(--plop-ink); border-radius: 50%; background: var(--plop-mustard); }
+.challenge-hint-badge svg { width: 17px; height: 17px; }
+.challenge-clue { display: inline-flex; align-items: center; gap: 3px; white-space: nowrap; }
+.challenge-clue > span:first-child { display: flex; }
+.challenge-clue svg { width: 20px; height: 20px; }
+.challenge-hint-info summary { display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; cursor: pointer; list-style: none; }
+.challenge-hint-info summary::-webkit-details-marker { display: none; }
+.challenge-hint-info summary:focus-visible { outline: 3px solid var(--plop-tomato); border-radius: 50%; }
+.challenge-hint-info svg { width: 21px; height: 21px; }
+.challenge-hint-explanation { position: absolute; z-index: 3; top: 100%; right: 0; width: min(290px, 100%); max-height: min(220px, calc(100dvh - 150px)); overflow-y: auto; padding: 10px; border: 2px solid var(--plop-ink); border-radius: 10px; background: var(--plop-paper); box-shadow: 3px 4px 0 var(--plop-ink); font: 400 14px/1.25 Sketchpop, sans-serif; }
+.challenge-hint-explanation p { margin: 0 0 6px; }
+.challenge-hint-explanation p:last-child { margin-bottom: 0; }
+.challenge-scratch-controls { width: min(100%, calc((100dvh - 210px) * 1.1475)); margin: 0 auto; container-type: inline-size; }
+.challenge-large-frame { position: relative; width: 100%; aspect-ratio: 10 / 7; overflow: hidden; margin-bottom: 8px; border-radius: 18px; }
+.challenge-eraser { display: flex; height: max(44px, 17.142857cqw); margin: 0 0 8px; padding: 0; border: 0; }
+.challenge-eraser[hidden] { display: none; }
+.challenge-eraser label { position: relative; display: flex; width: 25%; align-items: center; justify-content: center; cursor: pointer; }
+.challenge-eraser input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.challenge-eraser-circle { display: block; aspect-ratio: 1; border: 1px solid var(--plop-ink); border-radius: 50%; background: var(--plop-paper); }
+.challenge-eraser-small { width: 3.214286cqw; }
+.challenge-eraser-medium { width: 6.428571cqw; }
+.challenge-eraser-large { width: 11.428571cqw; }
+.challenge-eraser-extra-large { width: 17.142857cqw; }
+.challenge-eraser input:checked + .challenge-eraser-circle { background: var(--plop-tomato); box-shadow: 0 0 0 2px var(--plop-paper), 0 0 0 4px var(--plop-ink); }
+.challenge-eraser input:focus-visible + .challenge-eraser-circle { outline: 3px solid var(--plop-tomato); outline-offset: 5px; }
+.challenge-actions { display: flex; gap: 8px; justify-content: center; }
+.challenge-actions button,
+.challenge-submit-button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 14px; border: 2px solid var(--plop-ink); border-radius: 12px 9px 13px 10px; background: var(--plop-mustard); color: var(--plop-ink-text); font: italic 700 16px/1.1 Sketchpop, sans-serif; box-shadow: 3px 4px 0 var(--plop-ink); cursor: pointer; transition: transform 120ms, box-shadow 120ms; }
+.challenge-actions button:hover,
+.challenge-submit-button:hover { transform: translateY(-2px); }
+.challenge-actions button:active,
+.challenge-submit-button:active { transform: translate(2px, 3px); box-shadow: 1px 1px 0 var(--plop-ink); }
+.challenge-new, .challenge-submit-button { background: var(--plop-mint) !important; }
+.challenge-close { background: var(--plop-paper) !important; }
+.challenge-actions button:focus-visible,
+.challenge-submit-button:focus-visible,
+.map-zoom-control__button:focus-visible { outline: 3px solid var(--plop-tomato); outline-offset: 3px; }
+.challenge-actions svg,
+.challenge-submit-button svg { width: 18px; height: 18px; }
+@media (max-width: 400px), (max-height: 500px) {
+  .challenge-actions { gap: 4px; }
+  .challenge-actions button { gap: 3px; padding: 6px; font-size: 13px; }
+  .challenge-actions svg { width: 14px; height: 14px; }
+  .challenge-dialog-clues { gap: 2px; padding: 6px 3px; font-size: 13px; }
+  .challenge-clue { gap: 1px; }
+  .challenge-clue svg { width: 16px; height: 16px; }
+}
+@media (max-height: 400px) {
+  .challenge-actions button span { display: none; }
+  .challenge-actions button { min-width: 44px; min-height: 36px; }
+  .challenge-progress-title { font-size: 16px; }
+  .challenge-progress { margin-bottom: 4px; }
+  .challenge-dialog-clues { margin: 8px 0 4px; padding: 3px; }
+  .challenge-scratch-controls { width: min(100%, calc((100dvh - 220px) * 1.1475)); }
+}
+.challenge-submit-control { position: absolute; z-index: 10000; bottom: max(14px, env(safe-area-inset-bottom)); left: 50%; display: flex; flex-direction: column; align-items: center; gap: 6px; transform: translateX(-50%); pointer-events: none; }
+.challenge-submit-button { pointer-events: auto; }
+.challenge-submit-button[hidden],
+.challenge-actions button[hidden],
+.challenge-result[hidden] { display: none; }
+.challenge-submit-button:disabled { opacity: 0.5; cursor: not-allowed; }
+.challenge-result { width: min(90vw, 360px); padding: 7px 10px; border: 2px solid var(--plop-ink); border-radius: 10px 8px 11px 9px; background: var(--plop-paper); color: var(--plop-ink-text); font: 700 15px Sketchpop, sans-serif; text-align: center; box-shadow: 3px 4px 0 var(--plop-ink); }
+.challenge-guess-marker,
+.challenge-answer-marker { border: 0; background: transparent; }
+.challenge-guess-marker { pointer-events: none; }
+.challenge-guess-marker svg { width: 28px; height: 28px; }
+.challenge-answer-marker svg { width: 32px; height: 32px; }
+
+@media (max-width: 600px) {
+  .leaflet-bottom .leaflet-control.location-challenge { margin-bottom: 65px; }
+  .world-map:has(.challenge-result:not([hidden])) .leaflet-bottom .leaflet-control.location-challenge { margin-bottom: 125px; }
+  .game-brand { top: 12px; left: 12px; }
+  .game-brand .WordSticker_root { font-size: 24px !important; }
+}
+
+@media (max-height: 500px) {
+  .splash-game { gap: 6px; padding: 12px; }
+  .splash-title .WordSticker_root { font-size: 32px !important; }
+  .splash-description { font-size: 16px; }
+  .splash-start { margin-top: 0; }
+  .splash-start .Sticker_buddyHead, .splash-start .Sticker_buddyHands { display: none; }
+  .splash-footer { margin-top: 2px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .challenge-actions button,
+  .challenge-submit-button { transition: none; }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .challenge-scratch-cover { cursor: none; }
 }

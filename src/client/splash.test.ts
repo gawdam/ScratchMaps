@@ -25,7 +25,7 @@ afterEach(() => {
 });
 
 describe('Splash', () => {
-  it('clicking the "Docs" footer button calls navigateTo(...)', async () => {
+  it('starts the game and keeps the Docs link working', async () => {
     document.body.innerHTML = '<div id="root"></div>';
 
     // `src/splash.tsx` renders immediately on import (createRoot(...).render(...))
@@ -34,7 +34,13 @@ describe('Splash', () => {
     // Let React commit the initial render.
     await new Promise((r) => setTimeout(r, 0));
 
-    const docsButton = Array.from(document.querySelectorAll('button')).find(
+    const buttons = Array.from(document.querySelectorAll('button'));
+    const startButton = buttons.find((button) => /tap to start/i.test(button.textContent ?? ''));
+    expect(startButton).toBeTruthy();
+    startButton!.click();
+    expect(requestExpandedModeMock).toHaveBeenCalledWith(expect.any(MouseEvent), 'game');
+
+    const docsButton = buttons.find(
       (b) => /docs/i.test(b.textContent ?? '')
     );
     expect(docsButton).toBeTruthy();

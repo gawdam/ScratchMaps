@@ -6,7 +6,7 @@
     "customConditions": ["browser"],
     "rootDir": "../src/client"
   },
-  "include": ["../src/client/**/*"],
+  "include": ["../src/client/**/*", "../src/client/landmark-data.json", "../src/client/river-label-data.json"],
   "exclude": [],
   "references": [
     {
